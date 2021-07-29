@@ -6,7 +6,7 @@ import (
 	"os"
 	"path"
 
-	msg "github.com/adlrocha/libp2p-msg/msg"
+	msg "github.com/adlrocha/libp2p-msg/cbor-example/msg"
 	cborgen "github.com/whyrusleeping/cbor-gen"
 )
 
