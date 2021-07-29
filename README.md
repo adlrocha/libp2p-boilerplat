@@ -1,4 +1,4 @@
-# libp2p-msg ✉️
+# libp2p-boilerplate 🍜
 
 This repo includes a set of examples for the exchange of different 
 message formats, and sample protocols over libp2p. 
