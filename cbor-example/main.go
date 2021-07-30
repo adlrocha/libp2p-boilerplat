@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/adlrocha/libp2p-msg/cbor-example/msg"
+	"github.com/adlrocha/libp2p-boilerplate/cbor-example/msg"
 	cborutil "github.com/filecoin-project/go-cbor-util"
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"

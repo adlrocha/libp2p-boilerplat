@@ -5,7 +5,7 @@ import (
 	"io"
 	"sync"
 
-	pb "github.com/adlrocha/libp2p-msg/req-resp-example/pb"
+	pb "github.com/adlrocha/libp2p-boilerplate/req-resp-example/pb"
 	"github.com/libp2p/go-msgio/protoio"
 )
 

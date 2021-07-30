@@ -3,7 +3,7 @@ package client
 import (
 	"context"
 
-	pb "github.com/adlrocha/libp2p-msg/req-resp-example/pb"
+	pb "github.com/adlrocha/libp2p-boilerplate/req-resp-example/pb"
 	logging "github.com/ipfs/go-log"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"

@@ -11,8 +11,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-msgio"
 
-	"github.com/adlrocha/libp2p-msg/req-resp-example/net"
-	pb "github.com/adlrocha/libp2p-msg/req-resp-example/pb"
+	"github.com/adlrocha/libp2p-boilerplate/req-resp-example/net"
+	pb "github.com/adlrocha/libp2p-boilerplate/req-resp-example/pb"
 )
 
 // Idle time before the stream is closed

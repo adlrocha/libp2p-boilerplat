@@ -1,4 +1,4 @@
-module github.com/adlrocha/libp2p-msg
+module github.com/adlrocha/libp2p-boilerplate
 
 go 1.16
 

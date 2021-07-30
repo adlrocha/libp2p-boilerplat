@@ -5,8 +5,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/adlrocha/libp2p-msg/req-resp-example/client"
-	"github.com/adlrocha/libp2p-msg/req-resp-example/server"
+	"github.com/adlrocha/libp2p-boilerplate/req-resp-example/client"
+	"github.com/adlrocha/libp2p-boilerplate/req-resp-example/server"
 	"github.com/libp2p/go-libp2p-core/host"
 	swarmt "github.com/libp2p/go-libp2p-swarm/testing"
 	bhost "github.com/libp2p/go-libp2p/p2p/host/basic"
