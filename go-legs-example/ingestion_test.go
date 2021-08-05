@@ -46,7 +46,7 @@ func TestRoundTrip(t *testing.T) {
 	time.Sleep(time.Second)
 
 	watcher, cncl := ls.OnChange()
-	_, ilnk1, err := RandomIndex(srcStore, 3, &_Link_Index{})
+	_, ilnk1, err := GenesisIndex(srcStore, 3)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -90,11 +90,10 @@ func TestRoundTrip(t *testing.T) {
 		if !downstream.Equals(lnk2.(cidlink.Link).Cid) {
 			t.Fatalf("sync'd sid unexpected %s vs %s", downstream, lnk2)
 		}
+		// Check if all indices have been received.
 		if _, err := dstStore.Get(ds.NewKey(downstream.String())); err != nil {
 			t.Fatalf("data for lnk2 not in receiver store: %v", err)
 		}
-		// TODO: This test fails, selector is not traversing Previous link in go-data-transfer
-		// (although it's there in source, try printing it)
 		if _, err := dstStore.Get(ds.NewKey(lnk1.(cidlink.Link).Cid.String())); err != nil {
 			t.Fatalf("data for lnk1 in receiver store: %v", err)
 		}

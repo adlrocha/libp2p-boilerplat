@@ -12,7 +12,7 @@ import (
 func (n _Advertisement) FieldID() Bytes {
 	return &n.ID
 }
-func (n _Advertisement) FieldIndexID() Link_Index {
+func (n _Advertisement) FieldIndexID() MaybeLink_Index {
 	return &n.IndexID
 }
 func (n _Advertisement) FieldPreviousID() Bytes {
@@ -78,7 +78,10 @@ func (n Advertisement) LookupByString(key string) (ipld.Node, error) {
 	case "ID":
 		return &n.ID, nil
 	case "IndexID":
-		return &n.IndexID, nil
+		if n.IndexID.m == schema.Maybe_Absent {
+			return ipld.Absent, nil
+		}
+		return n.IndexID.v, nil
 	case "PreviousID":
 		return &n.PreviousID, nil
 	case "Provider":
@@ -126,7 +129,11 @@ func (itr *_Advertisement__MapItr) Next() (k ipld.Node, v ipld.Node, _ error) {
 		v = &itr.n.ID
 	case 1:
 		k = &fieldName__Advertisement_IndexID
-		v = &itr.n.IndexID
+		if itr.n.IndexID.m == schema.Maybe_Absent {
+			v = ipld.Absent
+			break
+		}
+		v = itr.n.IndexID.v
 	case 2:
 		k = &fieldName__Advertisement_PreviousID
 		v = &itr.n.PreviousID
@@ -241,7 +248,7 @@ var (
 	fieldBit__Advertisement_Provider = 1 << 3
 	fieldBit__Advertisement_Signature = 1 << 4
 	fieldBit__Advertisement_GraphSupport = 1 << 5
-	fieldBits__Advertisement_sufficient = 0 + 1 << 0 + 1 << 1 + 1 << 2 + 1 << 3 + 1 << 5
+	fieldBits__Advertisement_sufficient = 0 + 1 << 0 + 1 << 2 + 1 << 3 + 1 << 5
 )
 func (na *_Advertisement__Assembler) BeginMap(int64) (ipld.MapAssembler, error) {
 	switch *na.m {
@@ -345,10 +352,9 @@ func (ma *_Advertisement__Assembler) valueFinishTidy() bool {
 			return false
 		}
 	case 1:
-		switch ma.cm {
+		switch ma.w.IndexID.m {
 		case schema.Maybe_Value:
-			ma.ca_IndexID.w = nil
-			ma.cm = schema.Maybe_Absent
+			ma.w.IndexID.v = ma.ca_IndexID.w
 			ma.state = maState_initial
 			return true
 		default:
@@ -430,8 +436,8 @@ func (ma *_Advertisement__Assembler) AssembleEntry(k string) (ipld.NodeAssembler
 		ma.s += fieldBit__Advertisement_IndexID
 		ma.state = maState_midValue
 		ma.f = 1
-		ma.ca_IndexID.w = &ma.w.IndexID
-		ma.ca_IndexID.m = &ma.cm
+		ma.ca_IndexID.w = ma.w.IndexID.v
+		ma.ca_IndexID.m = &ma.w.IndexID.m
 		return &ma.ca_IndexID, nil
 	case "PreviousID":
 		if ma.s & fieldBit__Advertisement_PreviousID != 0 {
@@ -515,8 +521,8 @@ func (ma *_Advertisement__Assembler) AssembleValue() ipld.NodeAssembler {
 		ma.ca_ID.m = &ma.cm
 		return &ma.ca_ID
 	case 1:
-		ma.ca_IndexID.w = &ma.w.IndexID
-		ma.ca_IndexID.m = &ma.cm
+		ma.ca_IndexID.w = ma.w.IndexID.v
+		ma.ca_IndexID.m = &ma.w.IndexID.m
 		return &ma.ca_IndexID
 	case 2:
 		ma.ca_PreviousID.w = &ma.w.PreviousID
@@ -557,9 +563,6 @@ func (ma *_Advertisement__Assembler) Finish() error {
 		err := ipld.ErrMissingRequiredField{Missing: make([]string, 0)}
 		if ma.s & fieldBit__Advertisement_ID == 0 {
 			err.Missing = append(err.Missing, "ID")
-		}
-		if ma.s & fieldBit__Advertisement_IndexID == 0 {
-			err.Missing = append(err.Missing, "IndexID")
 		}
 		if ma.s & fieldBit__Advertisement_PreviousID == 0 {
 			err.Missing = append(err.Missing, "PreviousID")
@@ -693,7 +696,10 @@ func (n *_Advertisement__Repr) LookupByString(key string) (ipld.Node, error) {
 	case "ID":
 		return n.ID.Representation(), nil
 	case "IndexID":
-		return n.IndexID.Representation(), nil
+		if n.IndexID.m == schema.Maybe_Absent {
+			return ipld.Absent, ipld.ErrNotExists{ipld.PathSegmentOfString(key)}
+		}
+		return n.IndexID.v.Representation(), nil
 	case "PreviousID":
 		return n.PreviousID.Representation(), nil
 	case "Provider":
@@ -742,7 +748,11 @@ advance:if itr.idx >= 6 {
 		v = itr.n.ID.Representation()
 	case 1:
 		k = &fieldName__Advertisement_IndexID_serial
-		v = itr.n.IndexID.Representation()
+		if itr.n.IndexID.m == schema.Maybe_Absent {
+			itr.idx++
+			goto advance
+		}
+		v = itr.n.IndexID.v.Representation()
 	case 2:
 		k = &fieldName__Advertisement_PreviousID_serial
 		v = itr.n.PreviousID.Representation()
@@ -773,6 +783,9 @@ func (_Advertisement__Repr) ListIterator() ipld.ListIterator {
 }
 func (rn *_Advertisement__Repr) Length() int64 {
 	l := 6
+	if rn.IndexID.m == schema.Maybe_Absent {
+		l--
+	}
 	if rn.Signature.m == schema.Maybe_Absent {
 		l--
 	}
@@ -952,8 +965,9 @@ func (ma *_Advertisement__ReprAssembler) valueFinishTidy() bool {
 			return false
 		}
 	case 1:
-		switch ma.cm {
-		case schema.Maybe_Value:ma.cm = schema.Maybe_Absent
+		switch ma.w.IndexID.m {
+		case schema.Maybe_Value:
+			ma.w.IndexID.v = ma.ca_IndexID.w
 			ma.state = maState_initial
 			return true
 		default:
@@ -1029,8 +1043,9 @@ func (ma *_Advertisement__ReprAssembler) AssembleEntry(k string) (ipld.NodeAssem
 		ma.s += fieldBit__Advertisement_IndexID
 		ma.state = maState_midValue
 		ma.f = 1
-		ma.ca_IndexID.w = &ma.w.IndexID
-		ma.ca_IndexID.m = &ma.cm
+		ma.ca_IndexID.w = ma.w.IndexID.v
+		ma.ca_IndexID.m = &ma.w.IndexID.m
+		
 		return &ma.ca_IndexID, nil
 	case "PreviousID":
 		if ma.s & fieldBit__Advertisement_PreviousID != 0 {
@@ -1115,8 +1130,9 @@ func (ma *_Advertisement__ReprAssembler) AssembleValue() ipld.NodeAssembler {
 		ma.ca_ID.m = &ma.cm
 		return &ma.ca_ID
 	case 1:
-		ma.ca_IndexID.w = &ma.w.IndexID
-		ma.ca_IndexID.m = &ma.cm
+		ma.ca_IndexID.w = ma.w.IndexID.v
+		ma.ca_IndexID.m = &ma.w.IndexID.m
+		
 		return &ma.ca_IndexID
 	case 2:
 		ma.ca_PreviousID.w = &ma.w.PreviousID
@@ -1158,9 +1174,6 @@ func (ma *_Advertisement__ReprAssembler) Finish() error {
 		err := ipld.ErrMissingRequiredField{Missing: make([]string, 0)}
 		if ma.s & fieldBit__Advertisement_ID == 0 {
 			err.Missing = append(err.Missing, "ID")
-		}
-		if ma.s & fieldBit__Advertisement_IndexID == 0 {
-			err.Missing = append(err.Missing, "IndexID")
 		}
 		if ma.s & fieldBit__Advertisement_PreviousID == 0 {
 			err.Missing = append(err.Missing, "PreviousID")

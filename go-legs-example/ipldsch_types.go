@@ -57,7 +57,7 @@ type typeSlab struct {
 type Advertisement = *_Advertisement
 type _Advertisement struct {
 	ID _Bytes
-	IndexID _Link_Index
+	IndexID _Link_Index__Maybe
 	PreviousID _Bytes
 	Provider _String
 	Signature _Bytes__Maybe
