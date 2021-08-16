@@ -2,7 +2,6 @@ package ingestion
 
 import (
 	"bytes"
-	"context"
 	"io"
 	"math/rand"
 	"time"
@@ -23,13 +22,7 @@ var prefix = cid.Prefix{
 	MhLength: 16,
 }
 
-/* Requires latest go-ipld-prime
 var linkproto = cidlink.LinkPrototype{
-	Prefix: prefix,
-}
-*/
-
-var linkproto = cidlink.LinkBuilder{
 	Prefix: prefix,
 }
 
@@ -66,7 +59,8 @@ func RandomIndex(srcStore ds.Datastore, numEnt int, previous Link_Index) (Index,
 		Previous: _Link_Index__Maybe{m: schema.Maybe_Value, v: previous},
 	}
 
-	storer := func(_ ipld.LinkContext) (io.Writer, ipld.StoreCommitter, error) {
+	lsys := cidlink.DefaultLinkSystem()
+	lsys.StorageWriteOpener = func(_ ipld.LinkContext) (io.Writer, ipld.BlockWriteCommitter, error) {
 		buf := bytes.NewBuffer(nil)
 		return buf, func(lnk ipld.Link) error {
 			c := lnk.(cidlink.Link).Cid
@@ -74,7 +68,7 @@ func RandomIndex(srcStore ds.Datastore, numEnt int, previous Link_Index) (Index,
 		}, nil
 	}
 
-	lnk, err := linkproto.Build(context.Background(), ipld.LinkContext{}, &index, storer)
+	lnk, err := lsys.Store(ipld.LinkContext{}, linkproto, &index)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -96,38 +90,6 @@ func GenesisIndex(srcStore ds.Datastore, numEnt int) (Index, Link_Index, error) 
 		Entries: lentries,
 	}
 
-	storer := func(_ ipld.LinkContext) (io.Writer, ipld.StoreCommitter, error) {
-		buf := bytes.NewBuffer(nil)
-		return buf, func(lnk ipld.Link) error {
-			c := lnk.(cidlink.Link).Cid
-			return srcStore.Put(datastore.NewKey(c.String()), buf.Bytes())
-		}, nil
-	}
-
-	lnk, err := linkproto.Build(context.Background(), ipld.LinkContext{}, &index, storer)
-	if err != nil {
-		return nil, nil, err
-	}
-	return &index, &_Link_Index{lnk}, nil
-
-}
-
-/* Using new linksystem for latests version of go-ipld-prime. Require changes in go-legs.
-func RandomIndex(srcStore ds.Datastore, numEnt int, previous Link_Index) (Index, Link_Index, error) {
-	entries := make([]_Entry, numEnt)
-	for i := 0; i < numEnt; i++ {
-		_, cids, _ := RandomCids(10)
-		entries[i] = _Entry{
-			Cids: _List_String__Maybe{m: schema.Maybe_Value, v: &_List_String{cids}},
-		}
-	}
-	lentries := _List_Entry{x: entries}
-
-	index := _Index{
-		Entries:  lentries,
-		Previous: _Link_Index__Maybe{m: schema.Maybe_Value, v: previous},
-	}
-
 	lsys := cidlink.DefaultLinkSystem()
 	lsys.StorageWriteOpener = func(_ ipld.LinkContext) (io.Writer, ipld.BlockWriteCommitter, error) {
 		buf := bytes.NewBuffer(nil)
@@ -144,4 +106,3 @@ func RandomIndex(srcStore ds.Datastore, numEnt int, previous Link_Index) (Index,
 	return &index, &_Link_Index{lnk}, nil
 
 }
-*/
