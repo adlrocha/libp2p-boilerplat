@@ -20,8 +20,6 @@ require (
 	github.com/multiformats/go-multicodec v0.3.0
 	github.com/urfave/cli/v2 v2.3.0 // indirect
 	github.com/whyrusleeping/cbor-gen v0.0.0-20210713220151-be142a5ae1a8
-	github.com/willscott/go-legs v0.0.0-20210524143907-c1d3c1b5e8e1
+	github.com/willscott/go-legs v0.0.0-20210819083646-627032992b39
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 )
-
-replace github.com/willscott/go-legs => github.com/adlrocha/go-legs v0.0.0-20210816101503-7cf29b7df093
